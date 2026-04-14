@@ -58,6 +58,24 @@ cd your-project && claude
 
 Copy only what you need: `CLAUDE.md` + `templates/<stack>/CLAUDE.md` → merge → customize.
 
+### Install Error Learning MCP (optional but recommended)
+
+The `debugger` agent integrates with [orynvn/mcp-error-learning](https://github.com/orynvn/mcp-error-learning) — a local SQLite knowledge base that remembers past bugs and surfaces solutions automatically.
+
+```bash
+# Clone MCP server into your project root
+cd your-project
+git clone https://github.com/orynvn/mcp-error-learning.git
+
+# Install
+python3 -m pip install -e mcp-error-learning/
+
+# Claude Code auto-discovers it via .claude/settings.json — no extra config needed
+```
+
+> The knowledge base is stored at `mcp-error-learning/data/errors.db` (local only, not committed).  
+> Remove `mcp-error-learning/` from `.claude/settings.json` if you choose not to install it — the debugger falls back to `.context/ERRORS.md`.
+
 ## Design principles
 
 | Principle | Implementation |

@@ -1,4 +1,11 @@
 {
+  "mcpServers": {
+    "error-learning": {
+      "command": "python3",
+      "args": ["-m", "mcp_error_learning"],
+      "cwd": "./mcp-error-learning"
+    }
+  },
   "hooks": {
     "PostToolUse": [
       {

@@ -1,6 +1,9 @@
 # Context session logs — per-machine, not committed
 .context/sessions/
 
+# MCP Error Learning — external repo, not committed
+mcp-error-learning/
+
 # OS
 .DS_Store
 

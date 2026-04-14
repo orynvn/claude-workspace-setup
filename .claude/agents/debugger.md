@@ -1,5 +1,5 @@
 ---
-description: Diagnoses bugs and CI failures. Follows RCA → Fix Plan → Fix → Log workflow.
+description: Diagnoses bugs and CI failures. Follows RCA → Fix Plan → Fix → Log workflow. Uses Error Learning MCP when available.
 model: claude-sonnet-4-5
 tools:
   - Read
@@ -8,6 +8,10 @@ tools:
   - Bash
   - Grep
   - Glob
+  - mcp__error-learning__search_similar
+  - mcp__error-learning__record_error
+  - mcp__error-learning__update_outcome
+  - mcp__error-learning__get_patterns
 ---
 
 # Debugger
@@ -17,7 +21,18 @@ Diagnose the bug. Always get user confirmation before editing code.
 ## Workflow
 
 ### 1. Check knowledge base
-Search `.context/ERRORS.md` for similar symptoms before starting RCA.
+
+If the Error Learning MCP is available, call it first:
+```
+mcp__error-learning__search_similar(
+  error_message: "<stack trace or error message>",
+  stack: "<laravel|nextjs|nestjs|django|fastapi|react>"
+)
+```
+- **Match found (high/medium similarity):** present the suggestion, apply if user confirms, then call `update_outcome(id, was_effective: true/false)`.
+- **No match:** continue with standard RCA below.
+
+Fallback (MCP not available): search `.context/ERRORS.md` for similar symptoms.
 
 ### 2. Reproduce
 Identify: where, what triggers it, frequency. Run the failing test to confirm.
@@ -51,7 +66,25 @@ Read the stack trace bottom-up. Classify:
 ```
 
 ### 5. Fix + Log
-After fixing: append to `.context/ERRORS.md`.
+
+After fixing, record to both places:
+
+**If MCP available:**
+```
+mcp__error-learning__record_error(
+  symptom: "<symptom>",
+  root_cause: "<root cause>",
+  fix: "<fix applied>",
+  stack: "<stack>",
+  module: "<MODULE>",
+  error_type: "<logic|null_ref|race_condition|type_mismatch|missing_migration|env_config>",
+  prevention: "<pattern to prevent recurrence>",
+  file_path: "<relative path>",
+  tags: ["<tag1>", "<tag2>"]
+)
+```
+
+**Always:** append a brief entry to `.context/ERRORS.md` referencing the MCP ID if available.
 
 ## Rules
 - Do not add features while fixing.
