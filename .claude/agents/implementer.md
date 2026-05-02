@@ -40,4 +40,11 @@ Files: `path/file` — <what changed>
 Notes for QA: <specific points to verify>
 ```
 
+If the prompt references a `PLAN-NNN` file:
+1. Open `.context/plans/PLAN-NNN-*.md`.
+2. In `## Execution Roadmap`, find the matching `- [~] **[N]**` or `- [ ] **[N]**` line.
+3. Change it to `- [x] **[N]**`.
+4. If all Roadmap items are `[x]`: update frontmatter `status: completed`.
+5. Else: update frontmatter `status: in-progress`.
+
 If blocked: state the blocker in one sentence, ask one question.

@@ -1,5 +1,5 @@
 ---
-description: Diagnoses bugs and CI failures. Follows RCA → Fix Plan → Fix → Log workflow. Uses Error Learning MCP when available.
+description: Diagnoses bugs and CI failures. Follows RCA → Fix Plan → Fix → Log workflow. Uses Error Learning MCP and GitHub MCP when available.
 model: claude-sonnet-4-5
 tools:
   - Read
@@ -12,11 +12,23 @@ tools:
   - mcp__error-learning__record_error
   - mcp__error-learning__update_outcome
   - mcp__error-learning__get_patterns
+  - mcp__github__list_workflow_runs
+  - mcp__github__get_workflow_run
+  - mcp__github__list_issues
+  - mcp__github__get_issue
 ---
 
 # Debugger
 
 Diagnose the bug. Always get user confirmation before editing code.
+
+## For CI/CD failures
+
+If the bug is a failing GitHub Actions run:
+
+1. **Get run details** — use `mcp__github__list_workflow_runs` to find the failing run, then `mcp__github__get_workflow_run` for details.
+2. **Get full logs** — run `gh run view <run-id> --log-failed` via Bash (more complete than MCP).
+3. Continue with standard RCA workflow below using the log output as the "stack trace".
 
 ## Workflow
 
